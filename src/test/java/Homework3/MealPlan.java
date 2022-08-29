@@ -8,7 +8,7 @@ public class MealPlan extends AbstractTest{
     @Test
     void addMealTest() {
         String id = given()
-                .queryParam("hash", "a3da66460bfb7e62ea1c96cfa0b7a634a346ccbf")
+                .queryParam("hash", "3153d5e42b618eb4aeb12cd6691fd33ff9f6aeb1")
                 .queryParam("apiKey", getApiKey())
                 .body("{\n"
                         + " \"date\": 1644881179,\n"
@@ -24,7 +24,7 @@ public class MealPlan extends AbstractTest{
                         + " }\n"
                         + "}")
                 .when()
-                .post("https://api.spoonacular.com/mealplanner/geekbrains/items")
+                .post("https://api.spoonacular.com/mealplanner/vika0/items")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -33,9 +33,9 @@ public class MealPlan extends AbstractTest{
                 .toString();
 
         given()
-                .queryParam("hash", "a3da66460bfb7e62ea1c96cfa0b7a634a346ccbf")
+                .queryParam("hash", "3153d5e42b618eb4aeb12cd6691fd33ff9f6aeb1")
                 .queryParam("apiKey", getApiKey())
-                .delete("https://api.spoonacular.com/mealplanner/geekbrains/items/" + id)
+                .delete("https://api.spoonacular.com/mealplanner/vika0/items/" + id)
                 .then()
                 .statusCode(200);
     }
