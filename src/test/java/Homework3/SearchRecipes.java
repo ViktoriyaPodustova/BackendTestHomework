@@ -1,5 +1,7 @@
 package Homework3;
 
+import Response.ResponseForClassifyCuisine;
+import Response.ResponseForSearchRecipes;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 
@@ -50,28 +52,34 @@ public class SearchRecipes extends AbstractTest{
 }
 @Test
     void getVerifyingNumberData (){
-    JsonPath response = given()
+    ResponseForSearchRecipes responseForSearchRecipes = given()
+            .when()
         .queryParam("apiKey", getApiKey())
         .queryParam("minVitaminD", 10)
         .queryParam("number", 5)
-        .when()
         .get(getBaseUrl()+"recipes/complexSearch")
+            .then()
+            .extract()
+            .response()
             .body()
-            .jsonPath();
-    assertThat(response.get("number"), equalTo(5));
+            .as(ResponseForSearchRecipes.class);
+    assertThat(responseForSearchRecipes.getNumber(), equalTo(5));
 }
 
     @Test
     void getVerifyingTotalResultsData (){
-        JsonPath response = given()
+        ResponseForSearchRecipes responseForSearchRecipes  = given()
+                .when()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("minProtein", 25)
                 .queryParam("equipment", "blender")
-                .when()
                 .get(getBaseUrl()+"recipes/complexSearch")
+                .then()
+                .extract()
+                .response()
                 .body()
-                .jsonPath();
-        assertThat(response.get("totalResults"), equalTo(41));
+                .as(ResponseForSearchRecipes.class);
+        assertThat(responseForSearchRecipes.getTotalResults(), equalTo(41));
     }
 
 }

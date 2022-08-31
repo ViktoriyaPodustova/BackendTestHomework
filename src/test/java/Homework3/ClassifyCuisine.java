@@ -1,32 +1,29 @@
 package Homework3;
 
-import io.restassured.path.json.JsonPath;
+import Response.ResponseForClassifyCuisine;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 
 public class ClassifyCuisine extends AbstractTest {
     @Test
     void verifyingStatusCodePostTest() {
         given()
-                .queryParam("apiKey", getApiKey())
-                .contentType("application/x-www-form-urlencoded")
+                .spec(getRequestSpecification())
                 .formParam("title", "Fresh Cherry Scones")
                 .when()
                 .post(getBaseUrl() + "recipes/cuisine")
                 .then()
-                .assertThat()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
     @Test
     void verifyingSLAPostTest(){
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .queryParam("language","de")
-                .contentType("application/x-www-form-urlencoded")
                 .formParam("title", "Low Carb Brunch Burger")
                 .when()
                 .post(getBaseUrl() + "recipes/cuisine")
@@ -37,37 +34,36 @@ public class ClassifyCuisine extends AbstractTest {
     @Test
     void verifyingContentTypePostTest(){
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .queryParam("language","de")
-                .contentType("application/x-www-form-urlencoded")
                 .formParam("title", "Sushi")
                 .formParam("ingredientList", "rice")
                 .when()
                 .post(getBaseUrl() + "recipes/cuisine")
                 .then()
-                .assertThat()
-                .header("Content-Type", "application/json");
+                .spec(responseSpecification);
 
     }
     @Test
     void verifyingConfidenceDataPostTest (){
-        JsonPath response = given()
-                .queryParam("apiKey", getApiKey())
+        ResponseForClassifyCuisine responseForClassifyCuisine = given()
+                .spec(getRequestSpecification())
+                .when()
                 .queryParam("language","en")
-                .contentType("application/x-www-form-urlencoded")
                 .formParam("title", "Chicken Enchilada Casserole")
                 .formParam("ingredientList", "Chicken")
-                .when()
-                .post(getBaseUrl() + "recipes/cuisine")
+                .post(getBaseUrl() + "recipes/cuisine").prettyPeek()
+                .then()
+                .extract()
+                .response()
                 .body()
-                .jsonPath();
-        assertThat(response.get("confidence"), equalTo(0.95F));
+                .as(ResponseForClassifyCuisine.class);
+        assertThat(responseForClassifyCuisine.getConfidence(), equalTo(0.95));
     }
     @Test
     void verifyingStatusLinePostTest(){
         given()
-                .queryParam("apiKey", getApiKey())
-                .contentType("application/x-www-form-urlencoded")
+                .spec(getRequestSpecification())
                 .formParam("title", "Gujarati Dry Mung Bean Curry")
                 .when()
                 .post(getBaseUrl() + "recipes/cuisine")
